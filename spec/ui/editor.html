@@ -9,13 +9,22 @@
 
 </head>
 <body>
-  <textarea id="wrapper"></textarea>
+  <div id="wrapper"></div>
+  <code id='code'></code>
 
   <script>
-    WriterJS.configure({
+    let writerJS = WriterJS.configure({
       target: "#wrapper",
       placeholder: "Hello world"
     })
+
+    let wrapper = document.querySelector("#wrapper")
+
+    wrapper.addEventListener('keyup', () => {
+      let code = document.querySelector('code')
+      code.innerText = JSON.stringify(writerJS.getJSON())
+    })
+
   </script>
 </body>
 </html>
