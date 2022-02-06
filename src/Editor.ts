@@ -20,7 +20,6 @@ export class Editor {
   private serializer: EditorSerializer
 
   private constructor(hash: {target: string, placeholder: string}) {
-    console.log(typeof(document.querySelector(hash.target)))
     this.wrapper = document.querySelector(hash.target);
     this.placeholder = hash.placeholder;
     this.events = {actions: []}
