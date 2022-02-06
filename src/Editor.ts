@@ -6,19 +6,25 @@ export class Editor {
     return editor
   }
 
-  wrapper: any
-  textarea: any
-  placeholder: string
-  output: Object
+  private wrapper: HTMLElement
+  private textarea: { 
+    placeholder: string, 
+    selectionStart: number, 
+    selectionEnd: number,
+    value: string 
+  }
+  private placeholder: string
+  private events: { actions: Array<Object> }
 
-  constructor(hash: {target: string, placeholder: string}) {
+  private constructor(hash: {target: string, placeholder: string}) {
+    console.log(typeof(document.querySelector(hash.target)))
     this.wrapper = document.querySelector(hash.target);
     this.placeholder = hash.placeholder;
-    this.output = {}
+    this.events = {actions: []}
   }
 
-  getJSON(): Object {
-    return this.output
+  eventsJSON(): Object {
+    return this.events
   }
 
   private call(): void {
@@ -28,15 +34,30 @@ export class Editor {
     this.textarea.placeholder = this.placeholder
   }
 
-  private generateTextarea(wrapper: any): void {
+  private generateTextarea(wrapper: HTMLElement): void {
     let textarea = document.createElement('textarea')
     textarea.id = "writer-js"
-    textarea.addEventListener('keyup', _ => {
-      this.output["content"] = this.textarea.value 
+    textarea.addEventListener('keypress', event => {
+      let fromIndex = this.textarea.selectionStart;
+      let toIndex = this.textarea.selectionEnd;
+
+      this.events.actions.push({type: "key", content: this.keyPressed(event), from: fromIndex, to: toIndex})
     })
     wrapper.appendChild(textarea)
 
     this.textarea = textarea
+  }
+
+  private keyPressed(e: {keyCode: number, which: number}): string{
+    let keynum;
+  
+    if(window.event) {               
+      keynum = e.keyCode;
+    } else if(e.which){              
+      keynum = e.which;
+    }
+  
+    return String.fromCharCode(keynum);
   }
 
   private menu(): void {
@@ -48,7 +69,11 @@ export class Editor {
     bold.innerHTML = "<strong>B</strong>"
 
     bold.addEventListener('click', () => {
-
+        let from = this.textarea.selectionStart;
+        let to = this.textarea.selectionEnd - 1;
+        let substr = this.textarea.value.substr(from, to)
+        
+        this.events.actions.push({type: "bold", from: from, to: to, content: substr})
     })
 
     menu.appendChild(bold)

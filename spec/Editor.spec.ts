@@ -1,8 +1,7 @@
 import * as webdriver from "selenium-webdriver"
-import { text } from "stream/consumers"
 
-describe('Editor', () => {
-  it('return the expected placeholder after loading the writerjs library', async () => {
+describe('Editor',() => {
+  it('return the expected placeholder after loading the writerjs library',async () => {
     let html_file = __dirname + "/ui/editor.html"
     let driver = new webdriver.Builder()
                     .forBrowser("chrome")
@@ -19,8 +18,7 @@ describe('Editor', () => {
     await driver.quit()
   })
 
-
-  it('return bold button', async () => {
+  it('return expected bold button',async () => {
     let html_file = __dirname + "/ui/editor.html"
     let driver = new webdriver.Builder()
                     .forBrowser("chrome")
@@ -30,14 +28,14 @@ describe('Editor', () => {
     await driver.get("file:///" + html_file)
       .then(_ => driver.findElement({id: "btn-bold"}))
       .then(async (bold: webdriver.WebElement) => {
-        let id = await bold.getText()
-        expect(id).toEqual("B")
+        let boldText = await bold.getText()
+        expect(boldText).toEqual("B")
       })
     
     await driver.quit()
   })
 
-  it('return expected json after typing content', async () => {
+  it('return expected eventsJSON() after typing content',async () => {
     let html_file = __dirname + "/ui/editor.html"
     let driver = new webdriver.Builder()
                     .forBrowser("chrome")
@@ -47,13 +45,21 @@ describe('Editor', () => {
     await driver.get("file:///" + html_file)
       .then(_ => driver.findElement({id: "writer-js"}))
       .then(async (textarea: webdriver.WebElement) => {
-        textarea.clear()
-        textarea.sendKeys("foo bar")
+        await textarea.clear()
+        await textarea.sendKeys("f")
+        await textarea.sendKeys("o")
+        await textarea.sendKeys("o")
+        await textarea.sendKeys(" ")
+        await textarea.sendKeys("b")
+        await textarea.sendKeys("a")
+        await textarea.sendKeys("r")
+
         let code = await driver.findElement({id: "code"}).getText()
 
-        expect(code).toEqual('{"content":"foo bar"}')
+        expect(code).toEqual('{"actions":[{"type":"key","content":"f","from":0,"to":0},{"type":"key","content":"o","from":1,"to":1},{"type":"key","content":"o","from":2,"to":2},{"type":"key","content":" ","from":3,"to":3},{"type":"key","content":"b","from":4,"to":4},{"type":"key","content":"a","from":5,"to":5},{"type":"key","content":"r","from":6,"to":6}]}')
       })
     
     await driver.quit()
   })
 }) 
+
