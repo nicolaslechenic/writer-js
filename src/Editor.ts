@@ -1,3 +1,5 @@
+import { EditorSerializer } from "./EditorSerializer"
+
 export class Editor {
   static configure(hash: {target: string, placeholder: string}): Editor {
     let editor = new Editor(hash)
@@ -15,16 +17,19 @@ export class Editor {
   }
   private placeholder: string
   private events: { actions: Array<Object> }
+  private serializer: EditorSerializer
 
   private constructor(hash: {target: string, placeholder: string}) {
     console.log(typeof(document.querySelector(hash.target)))
     this.wrapper = document.querySelector(hash.target);
     this.placeholder = hash.placeholder;
     this.events = {actions: []}
+    this.serializer = new EditorSerializer(this.events)
   }
 
-  eventsJSON(): Object {
-    return this.events
+  eventsData(): string {
+    this.serializer.update(this.events)
+    return this.serializer.stringifiedEvents()
   }
 
   private call(): void {

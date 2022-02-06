@@ -35,7 +35,7 @@ describe('Editor',() => {
     await driver.quit()
   })
 
-  it('return expected eventsJSON() after typing content',async () => {
+  it('return expected eventsData() after typing content',async () => {
     let html_file = __dirname + "/ui/editor.html"
     let driver = new webdriver.Builder()
                     .forBrowser("chrome")
