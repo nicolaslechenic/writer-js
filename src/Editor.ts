@@ -59,6 +59,8 @@ export class Editor {
       keynum = e.keyCode;
     } else if(e.which){              
       keynum = e.which;
+    } else {
+      throw new Error("Unsupported browser");
     }
   
     return String.fromCharCode(keynum);
